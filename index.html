@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas del Cuerpo — La Función de Relación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EFE7F1;
+    --paper-dark:#E1D3E5;
+    --paper-line:#D2BFD9;
+    --ink:#291F33;
+    --ink-soft:#5B4E63;
+    --cream-card:#FBF6FB;
+
+    --nervioso:#4A4E9E;
+    --nervioso-dark:#32356B;
+    --nervioso-bg:#E1E1F2;
+
+    --endocrino:#1E8F82;
+    --endocrino-dark:#146259;
+    --endocrino-bg:#D9EFEA;
+
+    --sentidos:#C9862A;
+    --sentidos-dark:#8F5E17;
+    --sentidos-bg:#F6E4C6;
+
+    --locomotor:#8A4A32;
+    --locomotor-dark:#5E2F1E;
+    --locomotor-bg:#EDDCCF;
+
+    --gold:#9B5FB0;
+    --gold-dark:#733F86;
+    --ok:#2E7A52;
+    --bad:#A63B3B;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Space Grotesk',sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 1px 1px, var(--paper-line) 1px, transparent 1.4px) 0 0/22px 22px,
+      var(--paper);
+    min-height:100vh;
+    line-height:1.45;
+  }
+  h1,h2,h3,.display{font-family:'Fraunces',serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  button{font-family:inherit;cursor:pointer;}
+  ::selection{background:var(--gold);color:#fff;}
+  a{color:inherit;}
+
+  #app{max-width:960px;margin:0 auto;padding:20px 18px 70px;}
+
+  header.topbar{
+    position:sticky;top:0;z-index:20;
+    background:var(--paper);
+    border-bottom:2px solid var(--ink);
+    margin:0 -18px 22px;
+    padding:10px 18px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .seal{
+    width:34px;height:34px;border-radius:50%;
+    border:2px solid var(--ink);
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;background:var(--cream-card);
+  }
+  .brand-text{font-family:'Fraunces',serif;font-weight:700;font-size:1.05rem;}
+  .brand-text small{display:block;font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:.68rem;color:var(--ink-soft);letter-spacing:.03em;}
+
+  .level-pill{
+    display:flex;align-items:center;gap:8px;
+    background:var(--cream-card);
+    border:1.5px solid var(--ink);
+    border-radius:999px;padding:5px 12px;
+    font-size:.78rem;font-weight:600;
+  }
+  .level-pill button{background:none;border:none;color:var(--gold-dark);font-weight:700;text-decoration:underline;font-size:.75rem;padding:0;}
+
+  .passport{display:flex;gap:6px;}
+  .stamp-mini{
+    width:26px;height:26px;border-radius:50%;
+    border:1.5px dashed var(--ink-soft);
+    display:flex;align-items:center;justify-content:center;font-size:13px;
+    opacity:.35;filter:grayscale(1);
+  }
+  .stamp-mini.on{opacity:1;filter:none;border-style:solid;border-color:var(--ok);background:#fff;}
+
+  .page-title{font-size:1.9rem;font-weight:700;margin:0 0 6px;}
+  .page-sub{color:var(--ink-soft);margin:0 0 22px;font-size:.98rem;}
+
+  .card{
+    background:var(--cream-card);
+    border:2px solid var(--ink);
+    border-radius:14px;
+    box-shadow:5px 5px 0 rgba(41,31,51,.14);
+    padding:20px;
+  }
+
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--ink);color:var(--paper);
+    border:2px solid var(--ink);border-radius:10px;
+    padding:11px 20px;font-weight:600;font-size:.95rem;
+    transition:transform .12s ease, box-shadow .12s ease;
+    box-shadow:3px 3px 0 rgba(41,31,51,.3);
+  }
+  .btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 rgba(41,31,51,.3);}
+  .btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 rgba(41,31,51,.3);}
+  .btn.ghost{background:transparent;color:var(--ink);}
+  .btn.gold{background:var(--gold);border-color:var(--gold-dark);color:#fff;}
+  .btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none;}
+  .btn.small{padding:7px 14px;font-size:.82rem;}
+
+  .hero{text-align:center;padding:26px 10px 8px;}
+  .hero h1{font-size:2.5rem;margin:0 0 6px;line-height:1.05;}
+  .hero .accent{color:var(--gold-dark);font-style:italic;}
+  .hero p.lead{font-size:1.05rem;color:var(--ink-soft);max-width:580px;margin:0 auto 8px;}
+  .system-strip{display:flex;justify-content:center;gap:14px;margin:20px 0 8px;flex-wrap:wrap;font-size:1.6rem;}
+  .system-strip span{
+    width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    border:2px solid var(--ink);background:var(--cream-card);
+  }
+
+  .level-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin:26px 0;}
+  .level-card{
+    background:var(--cream-card);border:2px solid var(--ink);border-radius:14px;
+    padding:18px;text-align:left;box-shadow:5px 5px 0 rgba(41,31,51,.14);
+    transition:transform .12s ease;
+  }
+  .level-card:hover{transform:translateY(-3px);}
+  .level-card h3{margin:0 0 6px;font-size:1.15rem;}
+  .level-card p{margin:0 0 14px;font-size:.86rem;color:var(--ink-soft);min-height:64px;}
+  .level-card .tag{
+    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.68rem;
+    padding:3px 8px;border-radius:6px;margin-bottom:10px;font-weight:700;letter-spacing:.03em;
+  }
+  .tag.apoyo{background:var(--locomotor-bg);color:var(--locomotor-dark);}
+  .tag.estandar{background:var(--endocrino-bg);color:var(--endocrino-dark);}
+  .tag.altas{background:var(--sentidos-bg);color:var(--sentidos-dark);}
+
+  details.teacher{
+    max-width:640px;margin:26px auto 0;background:var(--paper-dark);
+    border:1.5px dashed var(--ink-soft);border-radius:12px;padding:14px 18px;text-align:left;
+  }
+  details.teacher summary{cursor:pointer;font-weight:700;font-size:.92rem;}
+  details.teacher .body{margin-top:10px;font-size:.86rem;color:var(--ink-soft);}
+  details.teacher ul{margin:8px 0;padding-left:20px;}
+
+  .game-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
+  .game-card{
+    background:var(--cream-card);border:2px solid var(--ink);border-radius:14px;padding:20px;
+    box-shadow:5px 5px 0 rgba(41,31,51,.14);display:flex;flex-direction:column;gap:10px;
+    text-align:left;position:relative;
+  }
+  .game-card .icon{font-size:2rem;}
+  .game-card h3{margin:0;font-size:1.15rem;}
+  .game-card p{margin:0;font-size:.85rem;color:var(--ink-soft);flex-grow:1;}
+  .game-card .stamp-corner{
+    position:absolute;top:14px;right:14px;font-size:1.3rem;
+    opacity:0;transform:scale(.5) rotate(-15deg);transition:all .25s ease;
+  }
+  .game-card .stamp-corner.on{opacity:1;transform:scale(1) rotate(-12deg);}
+
+  .sys-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+  .sys-tab{
+    border:2px solid var(--ink);border-radius:10px;padding:8px 14px;font-weight:600;font-size:.86rem;
+    background:var(--cream-card);display:flex;align-items:center;gap:6px;
+  }
+  .sys-tab.active{color:#fff;}
+  .sys-tab[data-sys="nervioso"].active{background:var(--nervioso);border-color:var(--nervioso-dark);}
+  .sys-tab[data-sys="endocrino"].active{background:var(--endocrino);border-color:var(--endocrino-dark);}
+  .sys-tab[data-sys="sentidos"].active{background:var(--sentidos);border-color:var(--sentidos-dark);}
+  .sys-tab[data-sys="locomotor"].active{background:var(--locomotor);border-color:var(--locomotor-dark);}
+  .sys-tab .dot{width:8px;height:8px;border-radius:50%;}
+  .sys-tab[data-sys="nervioso"] .dot{background:var(--nervioso);}
+  .sys-tab[data-sys="endocrino"] .dot{background:var(--endocrino);}
+  .sys-tab[data-sys="sentidos"] .dot{background:var(--sentidos);}
+  .sys-tab[data-sys="locomotor"] .dot{background:var(--locomotor);}
+  .sys-tab.done::after{content:"✓";margin-left:2px;}
+
+  .quiz-progress{font-size:.78rem;color:var(--ink-soft);margin-bottom:8px;}
+  .quiz-q{font-size:1.15rem;font-weight:600;margin:6px 0 16px;}
+  .opt-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+  .opt{
+    text-align:left;background:#fff;border:2px solid var(--ink);border-radius:10px;
+    padding:12px 14px;font-size:.92rem;font-weight:500;
+  }
+  .opt:hover:not(:disabled){background:var(--paper-dark);}
+  .opt.correct{background:#DBEEDF;border-color:var(--ok);}
+  .opt.wrong{background:#F5DCDC;border-color:var(--bad);}
+  .feedback-box{border-radius:10px;padding:12px 14px;font-size:.88rem;margin-bottom:14px;}
+  .feedback-box.ok{background:#DBEEDF;border:1.5px solid var(--ok);color:#1B4A2E;}
+  .feedback-box.bad{background:#F5DCDC;border:1.5px solid var(--bad);color:#5A1E1E;}
+  .hint-box{background:var(--paper-dark);border:1.5px dashed var(--ink-soft);border-radius:10px;padding:10px 14px;font-size:.85rem;margin-bottom:12px;}
+
+  .memory-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:16px;}
+  .mcard{
+    aspect-ratio:1/0.85;border:2px solid var(--ink);border-radius:10px;
+    background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;
+    text-align:center;font-size:.72rem;font-weight:600;padding:6px;position:relative;
+  }
+  .mcard.flipped, .mcard.matched{background:#fff;color:var(--ink);}
+  .mcard.matched{border-color:var(--ok);background:#DBEEDF;}
+  .mcard .back-mark{font-size:1.4rem;}
+
+  .pool{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+  .chip{
+    background:#fff;border:2px solid var(--ink);border-radius:10px;padding:9px 12px;font-size:.84rem;
+    font-weight:500;max-width:100%;
+  }
+  .chip.used{opacity:.35;}
+  .answer-list{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:8px;min-height:52px;
+    border:2px dashed var(--ink-soft);border-radius:10px;padding:12px;}
+  .answer-list li{
+    background:var(--cream-card);border:2px solid var(--ink);border-radius:10px;padding:9px 12px;font-size:.86rem;
+    display:flex;gap:10px;align-items:flex-start;
+  }
+  .answer-list li .num{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--gold-dark);}
+  .answer-list li button{background:none;border:none;margin-left:auto;font-size:.85rem;color:var(--bad);font-weight:700;}
+  .answer-list.empty::before{content:"Toca las piezas de abajo para construir el orden aquí ⬇";color:var(--ink-soft);font-size:.85rem;}
+
+  .result-line{display:flex;gap:8px;align-items:flex-start;font-size:.85rem;padding:8px 0;border-top:1px solid var(--paper-line);}
+  .result-line:first-child{border-top:none;}
+  .result-line .ico{flex-shrink:0;}
+
+  .end-wrap{text-align:center;padding:20px 10px;}
+  .big-stamp{
+    width:120px;height:120px;border-radius:50%;border:4px solid var(--ok);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 18px;
+    font-size:3rem;background:#fff;transform:rotate(-8deg);
+    animation:pop .4s ease;
+  }
+  @keyframes pop{from{transform:scale(.4) rotate(-8deg);opacity:0;}to{transform:scale(1) rotate(-8deg);opacity:1;}}
+  .score-line{font-size:1.3rem;font-weight:700;margin-bottom:6px;}
+  .actions-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px;}
+
+  .backrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+
+  footer.note{margin-top:40px;text-align:center;font-size:.72rem;color:var(--ink-soft);}
+
+  @media (max-width:520px){
+    .hero h1{font-size:1.8rem;}
+    .brand-text{font-size:.92rem;}
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ============================================================
+   DATOS — FUNCIÓN DE RELACIÓN
+   Sistemas: nervioso, endocrino, órganos de los sentidos, aparato locomotor
+   ============================================================ */
+const SYSTEM_INFO = {
+  nervioso:  {name:"Sistema nervioso",   icon:"🧠", color:"nervioso"},
+  endocrino: {name:"Sistema endocrino",  icon:"🧪", color:"endocrino"},
+  sentidos:  {name:"Órganos de los sentidos", icon:"👁️", color:"sentidos"},
+  locomotor: {name:"Aparato locomotor",  icon:"🦴", color:"locomotor"}
+};
+const SYSTEM_ORDER = ["nervioso","endocrino","sentidos","locomotor"];
+
+const LEVEL_INFO = {
+  apoyo:    {name:"Apoyo y refuerzo", tag:"ACNEAE / refuerzo", desc:"Vocabulario sencillo, pistas visibles, menos opciones por pregunta y sin límite de tiempo."},
+  estandar: {name:"Estándar", tag:"Nivel de aula", desc:"El nivel habitual de 3º de ESO: preguntas de opción múltiple y procesos completos."},
+  altas:    {name:"Altas capacidades", tag:"Ampliación", desc:"Preguntas de razonamiento, relación causa-efecto entre sistemas y retos sin pistas."}
+};
+
+const QUIZ = {
+ nervioso:{
+  apoyo:[
+   {q:"¿Qué órgano controla el pensamiento y las decisiones voluntarias?",options:["El cerebro","El estómago","Los riñones"],correct:0,hint:"Está dentro de tu cabeza 🧠",explain:"El cerebro es el órgano principal del pensamiento y el control voluntario del cuerpo."},
+   {q:"¿Qué estructura protege y transmite información dentro de la columna vertebral?",options:["La médula espinal","El corazón","El hígado"],correct:0,hint:"Va por dentro de la espalda",explain:"La médula espinal conecta el cerebro con el resto del cuerpo a través de la columna."},
+   {q:"Verdadero o falso: los nervios llevan información entre el cuerpo y el sistema nervioso central.",options:["Verdadero","Falso"],correct:0,hint:"Piensa en ellos como 'cables' del cuerpo",explain:"Los nervios forman el sistema nervioso periférico y comunican el cuerpo con el SNC."}
+  ],
+  estandar:[
+   {q:"¿Qué forma el sistema nervioso central (SNC)?",options:["El encéfalo y la médula espinal","Solo el cerebro","Los nervios craneales y raquídeos","El cerebelo y los nervios"],correct:0,explain:"El SNC está formado por el encéfalo (cerebro, cerebelo, bulbo raquídeo) y la médula espinal."},
+   {q:"¿Cuál es la función principal del cerebelo?",options:["Coordinar el equilibrio y los movimientos","Controlar la respiración de forma automática","Producir hormonas","Detectar la luz"],correct:0,explain:"El cerebelo coordina el equilibrio y la precisión de los movimientos."},
+   {q:"¿Qué parte de la neurona transmite el impulso nervioso hacia otras células?",options:["El axón","Las dendritas","El núcleo","La membrana"],correct:0,explain:"El axón conduce el impulso nervioso desde el cuerpo celular hasta otra neurona o efector."}
+  ],
+  altas:[
+   {q:"¿Por qué un acto reflejo, como retirar la mano de algo caliente, es tan rápido?",options:["Porque la señal va directamente a la médula espinal y no espera a ser procesada por el cerebro","Porque el cerebro decide en milisegundos","Porque los músculos actúan sin recibir ninguna señal","Porque no interviene el sistema nervioso"],correct:0,explain:"En el acto reflejo, la médula espinal genera la respuesta motora sin esperar a que el cerebro procese la información, lo que gana tiempo."},
+   {q:"¿Qué ocurre en la sinapsis entre dos neuronas?",options:["La primera neurona libera neurotransmisores que son captados por la siguiente","Las neuronas se fusionan físicamente","El impulso nervioso se convierte en una hormona","Se produce un cambio de temperatura corporal"],correct:0,explain:"En la sinapsis, la señal eléctrica se transforma en una señal química (neurotransmisores) que activa a la siguiente neurona."},
+   {q:"Si se dañara el bulbo raquídeo, ¿qué funciones podrían verse gravemente afectadas y por qué?",options:["Las funciones automáticas, como la respiración o el latido del corazón, porque se controlan desde ahí","La memoria a largo plazo, porque se almacena en el bulbo raquídeo","El sentido del gusto exclusivamente","Ninguna, el bulbo raquídeo no es esencial"],correct:0,explain:"El bulbo raquídeo regula funciones vitales automáticas; una lesión ahí puede ser muy grave."}
+  ]
+ },
+ endocrino:{
+  apoyo:[
+   {q:"¿Qué son las hormonas?",options:["Mensajeros químicos que viajan por la sangre","Células del sistema nervioso","Huesos del cuerpo"],correct:0,hint:"Van 'de viaje' por la sangre",explain:"Las hormonas son sustancias químicas liberadas por glándulas que viajan por la sangre."},
+   {q:"¿Qué órgano produce la insulina?",options:["El páncreas","El corazón","Los pulmones"],correct:0,hint:"También ayuda a digerir los alimentos",explain:"El páncreas produce insulina, la hormona que regula la glucosa en sangre."},
+   {q:"Verdadero o falso: la adrenalina se libera cuando sentimos miedo o peligro.",options:["Verdadero","Falso"],correct:0,hint:"Piensa en cuando el corazón te late muy rápido por susto",explain:"La adrenalina es la hormona de alerta ante situaciones de peligro o estrés."}
+  ],
+  estandar:[
+   {q:"¿Qué hormona regula la cantidad de glucosa en la sangre?",options:["La insulina","La adrenalina","La tiroxina","La hormona del crecimiento"],correct:0,explain:"La insulina, producida por el páncreas, permite que las células absorban la glucosa de la sangre."},
+   {q:"¿Qué glándula produce la tiroxina, que regula el metabolismo?",options:["La tiroides","La hipófisis","El páncreas","Las suprarrenales"],correct:0,explain:"La tiroides libera tiroxina, que regula la velocidad del metabolismo."},
+   {q:"¿Cuál es la principal diferencia entre la respuesta nerviosa y la hormonal?",options:["La nerviosa es rápida y breve; la hormonal es más lenta pero duradera","La nerviosa usa la sangre; la hormonal usa los nervios","Ambas son igual de rápidas","La hormonal no llega a todo el cuerpo"],correct:0,explain:"La vía nerviosa actúa en milisegundos, mientras que las hormonas tardan más pero su efecto dura más tiempo."}
+  ],
+  altas:[
+   {q:"Ante una situación de peligro, la adrenalina provoca varios cambios simultáneos. ¿Cuál de estos es uno de ellos y por qué ocurre?",options:["Aumenta la frecuencia cardíaca, para enviar más sangre y oxígeno a los músculos","Disminuye la frecuencia cardíaca, para ahorrar energía","Se detiene la respiración por completo","Se reduce el nivel de glucosa en sangre"],correct:0,explain:"La adrenalina prepara al cuerpo para 'luchar o huir', aumentando el riego sanguíneo a los músculos."},
+   {q:"¿Por qué se dice que el sistema endocrino y el sistema nervioso están coordinados?",options:["Porque el sistema nervioso puede estimular a las glándulas endocrinas para liberar hormonas","Porque son exactamente el mismo sistema","Porque las hormonas viajan por los nervios","Porque no tienen ninguna relación entre sí"],correct:0,explain:"El hipotálamo y otras estructuras nerviosas pueden activar la liberación de hormonas: ambos sistemas se comunican."},
+   {q:"Si la hipófisis produjera exceso de hormona del crecimiento durante la infancia, ¿qué consecuencia tendría?",options:["Un crecimiento excesivo de huesos y estatura (gigantismo)","Una reducción del tamaño del cuerpo","Ningún efecto visible","Una alteración exclusiva del sentido del gusto"],correct:0,explain:"El exceso de hormona del crecimiento en la infancia provoca un crecimiento óseo desproporcionado."}
+  ]
+ },
+ sentidos:{
+  apoyo:[
+   {q:"¿Qué órgano nos permite ver?",options:["El ojo","El oído","La piel"],correct:0,hint:"Tiene la retina dentro 👁️",explain:"El ojo capta la luz y nos permite ver."},
+   {q:"¿Qué sentido usamos para detectar los sabores?",options:["El gusto","El olfato","El tacto"],correct:0,hint:"Está en la lengua",explain:"El gusto, gracias a las papilas gustativas de la lengua, detecta los sabores."},
+   {q:"Verdadero o falso: la piel es el órgano del sentido del tacto.",options:["Verdadero","Falso"],correct:0,hint:"Piensa en cuando tocas algo frío o caliente",explain:"La piel contiene receptores que detectan presión, temperatura y dolor: es el órgano del tacto."}
+  ],
+  estandar:[
+   {q:"¿Qué estructura del ojo capta la luz y la transforma en señales nerviosas?",options:["La retina","La córnea","El iris","El cristalino"],correct:0,explain:"La retina contiene los receptores que transforman la luz en impulsos nerviosos."},
+   {q:"¿Qué parte del oído es responsable, además de la audición, del equilibrio?",options:["El oído interno","El oído externo","El tímpano","El pabellón auditivo"],correct:0,explain:"El oído interno contiene estructuras para el sonido y también para el equilibrio."},
+   {q:"¿Qué tienen en común todos los órganos de los sentidos?",options:["Contienen receptores que detectan estímulos y los convierten en señales nerviosas","Todos producen hormonas","Todos están conectados directamente a los músculos","Ninguno se comunica con el sistema nervioso"],correct:0,explain:"Todos los órganos de los sentidos poseen receptores especializados que transforman estímulos en impulsos nerviosos."}
+  ],
+  altas:[
+   {q:"¿Por qué al oler un alimento antes de probarlo ya podemos anticipar su sabor?",options:["Porque el olfato y el gusto están conectados: ambos detectan moléculas químicas y sus señales se combinan en el cerebro","Porque el gusto y el olfato son el mismo receptor","Porque la lengua puede oler directamente","Porque no existe relación entre ambos sentidos"],correct:0,explain:"Olfato y gusto son sentidos químicos cuyas señales se integran en el cerebro, por eso están tan relacionados."},
+   {q:"Una persona con daño en la retina, pero con el nervio óptico intacto, ¿qué problema tendría?",options:["No podría captar la luz correctamente, aunque la señal pudiera transmitirse al cerebro","No tendría ningún problema de visión","Perdería el sentido del oído","Perdería el equilibrio exclusivamente"],correct:0,explain:"Si el receptor (retina) está dañado, no se genera bien la señal, aunque el 'cable' (nervio óptico) funcione."},
+   {q:"¿Por qué se dice que los receptores sensoriales son 'transductores'?",options:["Porque transforman un tipo de energía del estímulo (luz, sonido, presión...) en impulsos nerviosos","Porque producen hormonas a partir de la luz","Porque generan movimiento directamente sin el sistema nervioso","Porque almacenan los estímulos para siempre"],correct:0,explain:"Un transductor convierte un tipo de energía en otro: los receptores convierten estímulos físicos o químicos en señales nerviosas."}
+  ]
+ },
+ locomotor:{
+  apoyo:[
+   {q:"¿Qué parte del cuerpo se contrae para producir el movimiento?",options:["Los músculos","Los huesos","La piel"],correct:0,hint:"Se ponen duros cuando haces fuerza 💪",explain:"Los músculos se contraen y, al tirar de los huesos, producen el movimiento."},
+   {q:"¿Qué función tienen los huesos, además de sostener el cuerpo?",options:["Proteger órganos importantes","Producir hormonas","Digerir alimentos"],correct:0,hint:"Piensa en el cráneo protegiendo el cerebro",explain:"Los huesos, además de dar sostén, protegen órganos vitales como el cerebro o el corazón."},
+   {q:"Verdadero o falso: las articulaciones permiten que los huesos se muevan.",options:["Verdadero","Falso"],correct:0,hint:"Piensa en tu codo o tu rodilla",explain:"Las articulaciones son la unión entre huesos que permite el movimiento."}
+  ],
+  estandar:[
+   {q:"¿Cómo se llama la unión entre dos o más huesos?",options:["Articulación","Tendón","Ligamento","Cartílago"],correct:0,explain:"La articulación es la zona de unión entre huesos que permite (o limita) el movimiento."},
+   {q:"En la función de relación, ¿qué papel cumple el aparato locomotor?",options:["Actúa como efector, ejecutando la respuesta ordenada por el sistema nervioso","Detecta los estímulos del ambiente","Produce las hormonas del cuerpo","Controla el pensamiento"],correct:0,explain:"Los músculos son efectores: reciben la orden nerviosa y producen el movimiento como respuesta."},
+   {q:"¿Qué estructura une el músculo al hueso para que pueda moverlo?",options:["El tendón","El ligamento","El cartílago","La neurona"],correct:0,explain:"El tendón conecta el músculo con el hueso, transmitiendo la fuerza de la contracción."}
+  ],
+  altas:[
+   {q:"¿Por qué se necesita siempre un par de músculos (agonista y antagonista) para mover una articulación como el codo?",options:["Porque los músculos solo pueden contraerse, no estirarse por sí mismos, así que uno flexiona y el otro extiende","Porque un solo músculo nunca puede moverse","Porque los huesos empujan a los músculos","Porque las articulaciones lo impiden"],correct:0,explain:"Como el músculo solo puede tirar (contraerse) y no empujar, se necesitan pares opuestos para mover una articulación en ambos sentidos."},
+   {q:"¿Qué relación hay entre una neurona motora y una fibra muscular?",options:["La neurona motora transmite la orden nerviosa que provoca la contracción del músculo","La fibra muscular envía órdenes a la neurona","No existe ninguna conexión entre ambas","El músculo se contrae sin recibir ninguna señal"],correct:0,explain:"La neurona motora conecta con el músculo y transmite el impulso que desencadena su contracción."},
+   {q:"Si se lesionara la médula espinal a la altura del cuello, ¿qué consecuencia tendría sobre el aparato locomotor y por qué?",options:["Podría causar parálisis en gran parte del cuerpo, porque las órdenes nerviosas hacia los músculos no podrían transmitirse","No tendría ningún efecto, los músculos funcionan de forma independiente","Solo afectaría a la vista","Provocaría un crecimiento óseo excesivo"],correct:0,explain:"Si la médula espinal se lesiona, las órdenes del cerebro no pueden llegar a los músculos situados por debajo de la lesión."}
+  ]
+ }
+};
+
+const MEMORY = {
+ apoyo:[
+  ["🧠 Cerebro","Controla el pensamiento y el movimiento voluntario"],
+  ["👁️ Ojo","Nos permite ver la luz"],
+  ["👂 Oído","Capta los sonidos"],
+  ["💪 Músculo","Se contrae y produce el movimiento"],
+  ["🦴 Hueso","Sostiene y protege el cuerpo"],
+  ["🧪 Hormona","Mensajero químico que viaja por la sangre"]
+ ],
+ estandar:[
+  ["Encéfalo","Centro de control del sistema nervioso"],
+  ["Médula espinal","Conecta el encéfalo con los nervios del cuerpo"],
+  ["Neurona","Célula que transmite el impulso nervioso"],
+  ["Retina","Capta la luz dentro del ojo"],
+  ["Páncreas","Produce la hormona insulina"],
+  ["Tiroides","Regula el metabolismo con la tiroxina"],
+  ["Articulación","Unión entre huesos que permite el movimiento"],
+  ["Tendón","Une el músculo al hueso"]
+ ],
+ altas:[
+  ["Sinapsis","Punto de comunicación entre dos neuronas"],
+  ["Acto reflejo","Respuesta rápida e involuntaria que no pasa por el cerebro"],
+  ["Adrenalina","Hormona de alerta ante el peligro"],
+  ["Transductor sensorial","Convierte un estímulo en impulso nervioso"],
+  ["Bulbo raquídeo","Controla funciones automáticas como la respiración"],
+  ["Cerebelo","Coordina el equilibrio y los movimientos precisos"],
+  ["Agonista-antagonista","Pareja de músculos que flexiona y extiende una articulación"],
+  ["Hipófisis","Glándula que regula otras glándulas y el crecimiento"],
+  ["SNC","Sistema nervioso central: encéfalo y médula espinal"],
+  ["SNP","Sistema nervioso periférico: nervios craneales y raquídeos"]
+ ]
+};
+
+const SEQUENCES = {
+ nervioso:{
+  full:["Un estímulo (por ejemplo, calor) activa un receptor de la piel","El receptor genera un impulso nervioso","El impulso viaja por un nervio sensitivo hasta la médula espinal","La médula espinal envía la orden por un nervio motor","El músculo (efector) se contrae y retira la mano"],
+  apoyo:["Algo caliente toca tu piel","La señal llega a la médula espinal","La médula manda la orden al músculo","Retiras la mano rápidamente"],
+  distractores:["El estímulo llega primero al cerebro, que decide con calma qué hacer","Las hormonas provocan el movimiento inmediato del músculo"]
+ },
+ endocrino:{
+  full:["Después de comer, sube el nivel de glucosa en la sangre","El páncreas detecta ese aumento","El páncreas libera insulina a la sangre","La insulina permite que las células absorban la glucosa","El nivel de glucosa en sangre vuelve a la normalidad"],
+  apoyo:["Comes y sube el azúcar en tu sangre","El páncreas libera insulina","Las células usan el azúcar de la sangre","El azúcar en sangre vuelve a lo normal"],
+  distractores:["El cerebro libera insulina directamente a los músculos","La insulina viaja por los nervios hasta el páncreas"]
+ },
+ sentidos:{
+  full:["La luz entra en el ojo y atraviesa la córnea y el cristalino","La luz llega hasta la retina, en el fondo del ojo","Los receptores de la retina transforman la luz en impulsos nerviosos","El impulso viaja por el nervio óptico hasta el cerebro","El cerebro interpreta la señal y 'vemos' la imagen"],
+  apoyo:["La luz entra por el ojo","Llega a la retina","La retina la convierte en una señal nerviosa","El cerebro interpreta lo que ves"],
+  distractores:["El ojo produce hormonas para poder ver","El sonido se transforma en imagen dentro del oído"]
+ },
+ locomotor:{
+  full:["El cerebro decide realizar un movimiento voluntario","La orden viaja por un nervio motor hasta el músculo","El músculo recibe la señal nerviosa","El músculo se contrae y tira del hueso mediante el tendón","El hueso se mueve gracias a la articulación"],
+  apoyo:["El cerebro decide moverse","La orden llega al músculo","El músculo se contrae","El hueso se mueve"],
+  distractores:["El hueso se contrae para mover el músculo","Las hormonas provocan directamente cada movimiento voluntario"]
+ }
+};
+
+const CHAIN = {
+ apoyo:["Se produce un estímulo en el ambiente (por ejemplo, un ruido fuerte)","Un órgano de los sentidos lo detecta (el oído)","El sistema nervioso recibe y procesa la información","El sistema nervioso ordena una respuesta a los músculos","El cuerpo reacciona (por ejemplo, te giras hacia el sonido)"],
+ estandar:["Un estímulo del ambiente, interno o externo, aparece","Un receptor sensorial lo detecta y lo transforma en impulso nervioso","El sistema nervioso central procesa la información","El sistema nervioso, y a veces el sistema endocrino, elaboran una respuesta","La orden llega a un efector: un músculo o una glándula","El efector actúa y se produce la respuesta observable"],
+ altas:["Un estímulo interno o externo actúa sobre el organismo","Un receptor sensorial especializado transforma ese estímulo en un impulso nervioso (transducción)","El impulso viaja por el sistema nervioso periférico hasta el sistema nervioso central","El sistema nervioso central procesa la información y puede activar también al sistema endocrino","Las hormonas viajan por la sangre mientras las órdenes nerviosas viajan por los nervios motores","La señal llega a un efector: un músculo (movimiento) o una glándula (secreción)","Se produce la respuesta, que puede ser rápida y breve (nerviosa) o lenta y duradera (hormonal)"]
+};
+
+const GAME_META = {
+  memory:{name:"Memoria del Cuerpo",icon:"🧠",desc:"Encuentra las parejas de estructuras y funciones antes de agotar los intentos."},
+  quiz:{name:"Preguntas y Respuestas",icon:"❓",desc:"Responde preguntas de cada sistema. Consigue el sello al superarlos todos."},
+  sequence:{name:"Ordena el Proceso",icon:"🔢",desc:"Reconstruye el orden correcto de cada sistema, paso a paso."},
+  chain:{name:"Reto de Integración",icon:"🔗",desc:"Une los cuatro sistemas en una sola cadena: del estímulo a la respuesta."}
+};
+
+/* ============================================================
+   ESTADO
+   ============================================================ */
+function emptyStamps(){return {memory:false,quiz:false,sequence:false,chain:false};}
+let state = {
+  screen:"cover",
+  level:"estandar",
+  stamps:{apoyo:emptyStamps(),estandar:emptyStamps(),altas:emptyStamps()},
+  quiz:null,
+  memory:null,
+  sequence:null,
+  chain:null
+};
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+/* ============================================================
+   INICIALIZADORES DE JUEGO
+   ============================================================ */
+function startQuiz(){
+  state.quiz={system:null,qIndex:0,score:0,selected:null,checked:false,systemsDone:[]};
+  state.screen="quiz";
+  render();
+}
+function pickQuizSystem(sys){
+  state.quiz.system=sys;
+  state.quiz.qIndex=0;
+  state.quiz.score=0;
+  state.quiz.selected=null;
+  state.quiz.checked=false;
+  render();
+}
+
+function startMemory(){
+  const pairs = MEMORY[state.level];
+  let cards=[];
+  pairs.forEach((p,idx)=>{
+    cards.push({pairId:idx,text:p[0]});
+    cards.push({pairId:idx,text:p[1]});
+  });
+  cards=shuffle(cards).map((c,i)=>({...c,uid:i}));
+  state.memory={deck:cards,flipped:[],matched:[],attempts:0,totalPairs:pairs.length};
+  state.screen="memory";
+  render();
+}
+
+function startSequence(){
+  state.sequence={system:null,pool:[],answer:[],checked:false};
+  state.screen="sequence";
+  render();
+}
+function pickSeqSystem(sys){
+  const data=SEQUENCES[sys];
+  let items;
+  if(state.level==="apoyo"){
+    items = data.apoyo.map((t,i)=>({id:"a"+i,text:t,correctIndex:i}));
+  } else if(state.level==="estandar"){
+    items = data.full.map((t,i)=>({id:"f"+i,text:t,correctIndex:i}));
+  } else {
+    items = data.full.map((t,i)=>({id:"f"+i,text:t,correctIndex:i,valid:true}));
+    data.distractores.forEach((t,i)=>items.push({id:"d"+i,text:t,correctIndex:-1,valid:false}));
+  }
+  state.sequence={system:sys,pool:shuffle(items),answer:[],checked:false,level:state.level};
+  render();
+}
+
+function startChain(){
+  const items = CHAIN[state.level].map((t,i)=>({id:"c"+i,text:t,correctIndex:i}));
+  state.chain={pool:shuffle(items),answer:[],checked:false};
+  state.screen="chain";
+  render();
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const appEl = document.getElementById("app");
+
+function render(){
+  appEl.innerHTML = topbar() + body();
+  window.scrollTo({top:0,behavior:"instant"});
+}
+
+function topbar(){
+  if(state.screen==="cover") return "";
+  const s = state.stamps[state.level];
+  return `
+  <header class="topbar">
+    <div class="brand">
+      <div class="seal">🧭</div>
+      <div class="brand-text">Atlas del Cuerpo<small>Función de relación</small></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div class="passport" title="Sellos conseguidos en este nivel">
+        <div class="stamp-mini ${s.memory?'on':''}">🧠</div>
+        <div class="stamp-mini ${s.quiz?'on':''}">❓</div>
+        <div class="stamp-mini ${s.sequence?'on':''}">🔢</div>
+        <div class="stamp-mini ${s.chain?'on':''}">🔗</div>
+      </div>
+      <div class="level-pill">
+        ${LEVEL_INFO[state.level].name}
+        <button data-action="go-cover">cambiar</button>
+      </div>
+    </div>
+  </header>`;
+}
+
+function body(){
+  switch(state.screen){
+    case "cover": return coverScreen();
+    case "menu": return menuScreen();
+    case "quiz": return quizScreen();
+    case "memory": return memoryScreen();
+    case "sequence": return sequenceScreen();
+    case "chain": return chainScreen();
+    case "end": return endScreen();
+    default: return "";
+  }
+}
+
+/* ---------- COVER ---------- */
+function coverScreen(){
+  return `
+  <div class="hero">
+    <h1>Atlas del Cuerpo <span class="accent">y la función de relación</span></h1>
+    <p class="lead">Una serie de juegos para explorar cómo el <strong>sistema nervioso</strong>, el <strong>sistema endocrino</strong>, los <strong>órganos de los sentidos</strong> y el <strong>aparato locomotor</strong> permiten detectar estímulos y responder a ellos.</p>
+    <div class="system-strip">
+      <span title="Nervioso">🧠</span><span title="Endocrino">🧪</span><span title="Sentidos">👁️</span><span title="Locomotor">🦴</span>
+    </div>
+  </div>
+
+  <h2 style="text-align:center;font-size:1.2rem;margin:26px 0 4px;">Elige tu nivel de juego</h2>
+  <p style="text-align:center;color:var(--ink-soft);font-size:.86rem;margin:0 0 6px;">Puedes cambiarlo en cualquier momento desde la parte superior.</p>
+
+  <div class="level-grid">
+    ${Object.keys(LEVEL_INFO).map(lv=>{
+      const info=LEVEL_INFO[lv];
+      return `
+      <div class="level-card">
+        <span class="tag ${lv}">${info.tag}</span>
+        <h3>${info.name}</h3>
+        <p>${info.desc}</p>
+        <button class="btn small" data-action="choose-level" data-level="${lv}">Jugar en este nivel →</button>
+      </div>`;
+    }).join("")}
+  </div>
+
+  <details class="teacher">
+    <summary>👩‍🏫 Guía docente: cómo se adapta este material (DUA)</summary>
+    <div class="body">
+      <p>Los cuatro minijuegos —incluido el de preguntas y respuestas— comparten estructura y mecánica para que cualquier alumno pueda participar en la misma sesión, cambiando solo el nivel de exigencia:</p>
+      <ul>
+        <li><strong>Apoyo y refuerzo:</strong> menos elementos por reto, opciones reducidas (a veces verdadero/falso), pistas visibles y lenguaje simplificado con apoyo icónico.</li>
+        <li><strong>Estándar:</strong> contenidos y vocabulario del currículo de 3º ESO, sin ayudas adicionales.</li>
+        <li><strong>Altas capacidades:</strong> preguntas de razonamiento y relación causa-efecto, elementos distractores en las secuencias y una cadena final que integra los cuatro sistemas.</li>
+      </ul>
+      <p>La interacción es siempre por selección/toque (sin arrastrar con precisión), lo que favorece la accesibilidad motriz. No se usa almacenamiento del navegador: el progreso se mantiene durante la sesión de juego.</p>
+    </div>
+  </details>
+
+  <footer class="note">Contenidos: función de relación — sistema nervioso, sistema endocrino, órganos de los sentidos y aparato locomotor · 3º ESO</footer>
+  `;
+}
+
+/* ---------- MENU ---------- */
+function menuScreen(){
+  const s = state.stamps[state.level];
+  return `
+  <h2 class="page-title">¿A qué jugamos?</h2>
+  <p class="page-sub">Nivel actual: <strong>${LEVEL_INFO[state.level].name}</strong>. Completa los cuatro juegos para conseguir todos los sellos de tu pasaporte.</p>
+  <div class="game-grid">
+    ${gameCard("memory")}
+    ${gameCard("quiz")}
+    ${gameCard("sequence")}
+    ${gameCard("chain")}
+  </div>
+  `;
+  function gameCard(key){
+    const m=GAME_META[key];
+    return `
+    <div class="game-card">
+      <span class="stamp-corner ${s[key]?'on':''}">✅</span>
+      <div class="icon">${m.icon}</div>
+      <h3>${m.name}</h3>
+      <p>${m.desc}</p>
+      <button class="btn small" data-action="open-game" data-game="${key}">${s[key]?'Jugar de nuevo':'Empezar'}</button>
+    </div>`;
+  }
+}
+
+/* ---------- QUIZ ---------- */
+function quizScreen(){
+  const qz = state.quiz;
+  if(!qz.system){
+    return `
+    ${backrow("Preguntas y Respuestas","Elige un sistema para responder sus preguntas.")}
+    <div class="sys-tabs">
+      ${SYSTEM_ORDER.map(sys=>tabHtml(sys, qz.systemsDone.includes(sys))).join("")}
+    </div>
+    <div class="card">
+      <p style="color:var(--ink-soft);font-size:.9rem;">Toca un sistema arriba para comenzar sus preguntas (${QUIZ.nervioso[state.level].length} preguntas por sistema en este nivel).</p>
+    </div>
+    `;
+  }
+  const qs = QUIZ[qz.system][state.level];
+  const q = qs[qz.qIndex];
+  const info = SYSTEM_INFO[qz.system];
+  return `
+  ${backrow("Preguntas y Respuestas — "+info.name, "Pregunta "+(qz.qIndex+1)+" de "+qs.length)}
+  <div class="sys-tabs">${SYSTEM_ORDER.map(sys=>tabHtml(sys, qz.systemsDone.includes(sys), sys===qz.system)).join("")}</div>
+  <div class="card">
+    <div class="quiz-progress mono">PUNTUACIÓN: ${qz.score} / ${qs.length}</div>
+    <div class="quiz-q">${q.q}</div>
+    ${(state.level!=="altas" && q.hint && !qz.checked) ? `<button class="btn ghost small" data-action="quiz-hint" style="margin-bottom:12px;">💡 Ver pista</button>` : ""}
+    ${qz._showHint ? `<div class="hint-box">💡 ${q.hint}</div>` : ""}
+    <div class="opt-list">
+      ${q.options.map((opt,i)=>{
+        let cls="opt";
+        if(qz.checked){
+          if(i===q.correct) cls+=" correct";
+          else if(i===qz.selected) cls+=" wrong";
+        }
+        return `<button class="${cls}" data-action="quiz-answer" data-i="${i}" ${qz.checked?'disabled':''}>${opt}</button>`;
+      }).join("")}
+    </div>
+    ${qz.checked ? `
+      <div class="feedback-box ${qz.selected===q.correct?'ok':'bad'}">
+        ${qz.selected===q.correct ? "✅ ¡Correcto! " : "❌ No es esa. "} ${q.explain}
+      </div>
+      <button class="btn gold" data-action="quiz-next">${qz.qIndex+1<qs.length ? "Siguiente pregunta →" : "Terminar sistema →"}</button>
+    ` : ""}
+  </div>
+  `;
+
+  function tabHtml(sys, done, active){
+    const inf=SYSTEM_INFO[sys];
+    return `<button class="sys-tab ${active?'active':''} ${done?'done':''}" data-sys="${sys}" data-action="quiz-pick-system">
+      <span class="dot"></span>${inf.icon} ${inf.name.replace('Sistema ','').replace('Órganos de los ','').replace('Aparato ','')}
+    </button>`;
+  }
+}
+
+/* ---------- MEMORY ---------- */
+function memoryScreen(){
+  const m = state.memory;
+  const allMatched = m.matched.length === m.deck.length;
+  return `
+  ${backrow("Memoria del Cuerpo","Toca dos tarjetas para encontrar cada pareja estructura–función.")}
+  <div class="card">
+    <div class="quiz-progress mono">PAREJAS: ${m.matched.length/2} / ${m.totalPairs} &nbsp;·&nbsp; INTENTOS: ${m.attempts}</div>
+    <div class="memory-grid">
+      ${m.deck.map(c=>{
+        const isFlipped = m.flipped.includes(c.uid);
+        const isMatched = m.matched.includes(c.uid);
+        const shown = isFlipped||isMatched;
+        return `<button class="mcard ${isFlipped?'flipped':''} ${isMatched?'matched':''}" data-action="memory-flip" data-uid="${c.uid}">
+          ${shown ? c.text : '<span class="back-mark">❔</span>'}
+        </button>`;
+      }).join("")}
+    </div>
+    ${allMatched ? `<button class="btn gold" data-action="memory-finish">Ver resultado 🎉</button>` : `<p style="font-size:.8rem;color:var(--ink-soft);">Encuentra las ${m.totalPairs} parejas.</p>`}
+  </div>
+  `;
+}
+
+/* ---------- SEQUENCE ---------- */
+function sequenceScreen(){
+  const sq = state.sequence;
+  if(!sq.system){
+    return `
+    ${backrow("Ordena el Proceso","Elige un sistema y reconstruye el orden correcto de su proceso.")}
+    <div class="sys-tabs">${SYSTEM_ORDER.map(sys=>{
+      const inf=SYSTEM_INFO[sys];
+      return `<button class="sys-tab" data-sys="${sys}" data-action="seq-pick-system"><span class="dot"></span>${inf.icon} ${inf.name.replace('Sistema ','').replace('Órganos de los ','').replace('Aparato ','')}</button>`;
+    }).join("")}</div>
+    ${state.level==="altas" ? `<div class="card"><p style="font-size:.85rem;color:var(--ink-soft);">⚠️ En este nivel el conjunto de piezas incluye <strong>2 afirmaciones falsas</strong> que no debes incluir en tu secuencia.</p></div>` : ""}
+    `;
+  }
+  const info=SYSTEM_INFO[sq.system];
+  const remaining = sq.pool.filter(it=>!sq.answer.find(a=>a.id===it.id));
+  return `
+  ${backrow("Ordena el Proceso — "+info.name, sq.checked ? "Resultado" : "Toca las piezas en el orden correcto")}
+  <div class="card">
+    <ol class="answer-list ${sq.answer.length===0?'empty':''}">
+      ${sq.answer.map((it,i)=>`<li><span class="num">${i+1}</span><span>${it.text}</span>${!sq.checked?`<button data-action="seq-remove" data-id="${it.id}">quitar</button>`:''}</li>`).join("")}
+    </ol>
+    ${!sq.checked ? `
+      <div class="pool">
+        ${remaining.map(it=>`<button class="chip" data-action="seq-add" data-id="${it.id}">${it.text}</button>`).join("")}
+      </div>
+      <button class="btn gold" data-action="seq-check" ${sq.answer.length===0?'disabled':''}>Comprobar orden</button>
+    ` : sequenceResult(sq)}
+  </div>
+  `;
+}
+
+function sequenceResult(sq){
+  const data = SEQUENCES[sq.system];
+  const correctOrder = (sq.level==="apoyo" ? data.apoyo : data.full);
+  const correctCount = sq.answer.filter((it,i)=>it.correctIndex===i && it.valid!==false).length;
+  const includesDistractor = sq.answer.some(it=>it.valid===false);
+  const isPerfect = sq.answer.length===correctOrder.length && correctCount===correctOrder.length && !includesDistractor;
+  return `
+  <div class="feedback-box ${isPerfect?'ok':'bad'}">
+    ${isPerfect ? "✅ ¡Orden perfecto!" : "❌ El orden no es correcto del todo. Revisa la secuencia correcta abajo:"}
+  </div>
+  <div style="margin-bottom:14px;">
+    ${correctOrder.map((t,i)=>`<div class="result-line"><span class="ico mono">${i+1}.</span><span>${t}</span></div>`).join("")}
+  </div>
+  <button class="btn gold" data-action="seq-finish">Continuar 🎉</button>
+  `;
+}
+
+/* ---------- CHAIN ---------- */
+function chainScreen(){
+  const ch = state.chain;
+  const remaining = ch.pool.filter(it=>!ch.answer.find(a=>a.id===it.id));
+  return `
+  ${backrow("Reto de Integración","Une los 4 sistemas: reconstruye el camino completo del estímulo a la respuesta.")}
+  <div class="card">
+    <ol class="answer-list ${ch.answer.length===0?'empty':''}">
+      ${ch.answer.map((it,i)=>`<li><span class="num">${i+1}</span><span>${it.text}</span>${!ch.checked?`<button data-action="chain-remove" data-id="${it.id}">quitar</button>`:''}</li>`).join("")}
+    </ol>
+    ${!ch.checked ? `
+      <div class="pool">
+        ${remaining.map(it=>`<button class="chip" data-action="chain-add" data-id="${it.id}">${it.text}</button>`).join("")}
+      </div>
+      <button class="btn gold" data-action="chain-check" ${ch.answer.length===0?'disabled':''}>Comprobar cadena</button>
+    ` : chainResult(ch)}
+  </div>
+  `;
+}
+
+function chainResult(ch){
+  const correctOrder = CHAIN[state.level];
+  const correctCount = ch.answer.filter((it,i)=>it.correctIndex===i).length;
+  const isPerfect = ch.answer.length===correctOrder.length && correctCount===correctOrder.length;
+  return `
+  <div class="feedback-box ${isPerfect?'ok':'bad'}">
+    ${isPerfect ? "✅ ¡Cadena completa y correcta! Has conectado los cuatro sistemas." : "❌ Aún no está en el orden correcto. Aquí tienes la cadena real:"}
+  </div>
+  <div style="margin-bottom:14px;">
+    ${correctOrder.map((t,i)=>`<div class="result-line"><span class="ico mono">${i+1}.</span><span>${t}</span></div>`).join("")}
+  </div>
+  <button class="btn gold" data-action="chain-finish">Continuar 🎉</button>
+  `;
+}
+
+/* ---------- END ---------- */
+function endScreen(){
+  const g = state._lastGame;
+  const m = GAME_META[g];
+  return `
+  ${backrow(m.name, "Resultado")}
+  <div class="card end-wrap">
+    <div class="big-stamp">${m.icon}</div>
+    <div class="score-line">${state._lastScoreText || "¡Juego completado!"}</div>
+    <p style="color:var(--ink-soft);font-size:.9rem;">Sello añadido a tu pasaporte de nivel <strong>${LEVEL_INFO[state.level].name}</strong>.</p>
+    <div class="actions-row">
+      <button class="btn ghost" data-action="open-game" data-game="${g}">🔁 Repetir</button>
+      <button class="btn gold" data-action="go-menu">📖 Volver al mapa</button>
+    </div>
+  </div>
+  `;
+}
+
+/* ---------- helpers ---------- */
+function backrow(title,sub){
+  return `
+  <div class="backrow">
+    <div>
+      <h2 class="page-title" style="font-size:1.5rem;margin-bottom:2px;">${title}</h2>
+      <p class="page-sub" style="margin:0;">${sub}</p>
+    </div>
+    <button class="btn ghost small" data-action="go-menu">← Volver al mapa</button>
+  </div>`;
+}
+
+/* ============================================================
+   EVENTOS
+   ============================================================ */
+appEl.addEventListener("click", (e)=>{
+  const el = e.target.closest("[data-action]");
+  if(!el) return;
+  const action = el.dataset.action;
+
+  if(action==="choose-level"){ state.level=el.dataset.level; state.screen="menu"; render(); return; }
+  if(action==="go-cover"){ state.screen="cover"; render(); return; }
+  if(action==="go-menu"){ state.screen="menu"; render(); return; }
+
+  if(action==="open-game"){
+    const g = el.dataset.game;
+    if(g==="memory") startMemory();
+    else if(g==="quiz") startQuiz();
+    else if(g==="sequence") startSequence();
+    else if(g==="chain") startChain();
+    return;
+  }
+
+  /* --- QUIZ --- */
+  if(action==="quiz-pick-system"){ pickQuizSystem(el.dataset.sys); return; }
+  if(action==="quiz-hint"){ state.quiz._showHint=true; render(); return; }
+  if(action==="quiz-answer"){
+    const qz=state.quiz;
+    if(qz.checked) return;
+    qz.selected = parseInt(el.dataset.i,10);
+    qz.checked = true;
+    const qs = QUIZ[qz.system][state.level];
+    if(qz.selected === qs[qz.qIndex].correct) qz.score++;
+    render();
+    return;
+  }
+  if(action==="quiz-next"){
+    const qz=state.quiz;
+    const qs = QUIZ[qz.system][state.level];
+    if(qz.qIndex+1 < qs.length){
+      qz.qIndex++; qz.selected=null; qz.checked=false; qz._showHint=false;
+      render();
+    } else {
+      if(!qz.systemsDone.includes(qz.system)) qz.systemsDone.push(qz.system);
+      if(qz.systemsDone.length === SYSTEM_ORDER.length){
+        state.stamps[state.level].quiz = true;
+        state._lastGame="quiz";
+        state._lastScoreText = "Has completado el quiz de los 4 sistemas.";
+        state.screen="end";
+      } else {
+        qz.system=null;
+      }
+      render();
+    }
+    return;
+  }
+
+  /* --- MEMORY --- */
+  if(action==="memory-flip"){
+    const m = state.memory;
+    const uid = parseInt(el.dataset.uid,10);
+    if(m.flipped.includes(uid) || m.matched.includes(uid)) return;
+    if(m.flipped.length>=2) return;
+    m.flipped.push(uid);
+    if(m.flipped.length===2){
+      m.attempts++;
+      const [u1,u2]=m.flipped;
+      const c1=m.deck.find(c=>c.uid===u1), c2=m.deck.find(c=>c.uid===u2);
+      if(c1.pairId===c2.pairId){
+        m.matched.push(u1,u2);
+        m.flipped=[];
+        render();
+      } else {
+        render();
+        setTimeout(()=>{ m.flipped=[]; render(); }, 850);
+      }
+      return;
+    }
+    render();
+    return;
+  }
+  if(action==="memory-finish"){
+    state.stamps[state.level].memory = true;
+    state._lastGame="memory";
+    state._lastScoreText = "Parejas encontradas en "+state.memory.attempts+" intentos.";
+    state.screen="end";
+    render();
+    return;
+  }
+
+  /* --- SEQUENCE --- */
+  if(action==="seq-pick-system"){ pickSeqSystem(el.dataset.sys); return; }
+  if(action==="seq-add"){
+    const sq=state.sequence;
+    const item = sq.pool.find(i=>i.id===el.dataset.id);
+    sq.answer.push(item);
+    render();
+    return;
+  }
+  if(action==="seq-remove"){
+    const sq=state.sequence;
+    sq.answer = sq.answer.filter(i=>i.id!==el.dataset.id);
+    render();
+    return;
+  }
+  if(action==="seq-check"){ state.sequence.checked=true; render(); return; }
+  if(action==="seq-finish"){
+    state.stamps[state.level].sequence = true;
+    state._lastGame="sequence";
+    state._lastScoreText = "Secuencia de "+SYSTEM_INFO[state.sequence.system].name+" completada.";
+    state.screen="end";
+    render();
+    return;
+  }
+
+  /* --- CHAIN --- */
+  if(action==="chain-add"){
+    const ch=state.chain;
+    const item = ch.pool.find(i=>i.id===el.dataset.id);
+    ch.answer.push(item);
+    render();
+    return;
+  }
+  if(action==="chain-remove"){
+    const ch=state.chain;
+    ch.answer = ch.answer.filter(i=>i.id!==el.dataset.id);
+    render();
+    return;
+  }
+  if(action==="chain-check"){ state.chain.checked=true; render(); return; }
+  if(action==="chain-finish"){
+    state.stamps[state.level].chain = true;
+    state._lastGame="chain";
+    state._lastScoreText = "Cadena de integración completada.";
+    state.screen="end";
+    render();
+    return;
+  }
+});
+
+render();
+</script>
+</body>
+</html>
